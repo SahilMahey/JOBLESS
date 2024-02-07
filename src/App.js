@@ -1,24 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useState } from 'react';
+import Navbar from './Pages/Navbar/Navbar.tsx'
+import Home from './Pages/Home/Home'
+import About from './Pages/About/About'
+import Error from './Pages/Error/Error.js'
 function App() {
+  const [array, setArray] = useState([]);
+
+  const add_array = () => {
+    console.log(array)
+    const newJob = {
+      jobPosition: 'Software Engineer', // Replace with the actual job position
+      jobCompany: 'ABC Corp', // Replace with the actual job company
+    };
+
+    // Create a new array with the updated job list
+    const newJobList = [...array, newJob];
+
+    // Update the state with the new job list
+    setArray(newJobList); 
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+    <BrowserRouter>
+    <Navbar add_array = {add_array} />
+    <Routes>
+      <Route  path ="/" element={ <Home array = {array}/>}/>
+      <Route path="Home" element={<Home />} />
+      <Route path="About" element={<About />} />
+      <Route path = "*" element ={<Error />} />
+    </Routes>
+    </BrowserRouter>
+    </>
   );
 }
 
