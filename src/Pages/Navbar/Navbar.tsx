@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { useState } from 'react';
+import dayjs, { Dayjs } from 'dayjs';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -9,18 +11,55 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
+import { TimeField } from '@mui/x-date-pickers/TimeField';
 import MenuItem from '@mui/material/MenuItem';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import AddIcon from '@mui/icons-material/Add';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
+import { DemoContainer} from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateField } from '@mui/x-date-pickers/DateField';
+import { DateTimeValidationError } from '@mui/x-date-pickers/models';
 import { NavLink, Link } from "react-router-dom";
 
+
 const pages = ['Home', 'About'];
+const start = dayjs('2020-01-01T00:00:00.000');
+const tomorrow = dayjs().add(1, 'day');
+const nineAM = dayjs().set('hour', 9).startOf('hour');
 const Navbar = (props: any) => {
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+    const [modal, setModal] = useState(false);
+    const [error, setError] = React.useState<DateTimeValidationError | null>(null);
+    const [errorTime, setErrorTime] = React.useState<DateTimeValidationError | null>(null);
+   
     
-  
+    const errorMessage = React.useMemo(() => {
+      
+      switch (error) {
+       
+        case 'maxDate':{
+          return 'You can\'t select a date after today!';
+        }
+        case 'minDate': {
+          return 'Please select a date after 2019';
+        }
+        case 'invalidDate': {
+          return 'The  entered value is not a valid.';
+        }
+        default: {
+          return '';
+        }
+      }
+    }, [error]);
+
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
       setAnchorElNav(event.currentTarget);
     }
@@ -29,7 +68,13 @@ const Navbar = (props: any) => {
       setAnchorElNav(null);
     };
   
+    const handleClickOpen = () => {
+      setModal(true);
+    };
     
+    const handleClose = () => {
+      setModal(false);
+    };
   
   return (
 
@@ -145,9 +190,73 @@ const Navbar = (props: any) => {
    
   </AppBar>
   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <Button variant="outlined" sx={{ my: 5, fontSize: 20}} onClick={() => props.add_array()}>
+      <Button variant="outlined" sx={{ my: 5, fontSize: 20}} onClick={handleClickOpen}>
       <AddIcon />
       </Button>
+      {modal &&  <React.Fragment>
+      <Dialog
+        open={modal}
+        onClose={handleClose}
+        PaperProps={{
+          component: 'form',
+          onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+            event.preventDefault();
+            const formData = new FormData(event.currentTarget);
+            const formJson = Object.fromEntries((formData as any).entries());
+            console.log(formJson)
+            handleClose();
+            props.add_array(formJson)
+          },
+        }}
+      >
+        <DialogTitle>REJECTION INFO</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="name"
+            name="name"
+            label="Job Name"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="Company"
+            name="Company"
+            label="Company Name"
+            fullWidth
+            variant="standard"
+          />
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DemoContainer components={['DateTimePicker','TimePicker']}>
+          <DateField required name="Date" label="Date"  onError={(newError) => setError(newError)}
+          slotProps={{
+            textField: {
+              helperText: errorMessage,
+            },
+          }}
+          minDate={start}
+          maxDate={tomorrow}
+          /> 
+          </DemoContainer>
+    </LocalizationProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DemoContainer components={['TimeField']}>
+        <TimeField label="Basic time field" name = "Time" required onError={(newError) => setErrorTime(newError)}
+         />
+      </DemoContainer>
+    </LocalizationProvider>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button type="submit" disabled={(error || errorTime) ? true : false} >Submit</Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>}
     </Box>
   </>
   )
