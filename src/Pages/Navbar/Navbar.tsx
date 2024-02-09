@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -32,7 +32,6 @@ import { NavLink, Link } from "react-router-dom";
 const pages = ['Home', 'About'];
 const start = dayjs('2020-01-01T00:00:00.000');
 const tomorrow = dayjs().add(1, 'day');
-const nineAM = dayjs().set('hour', 9).startOf('hour');
 const Navbar = (props: any) => {
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -200,11 +199,10 @@ const Navbar = (props: any) => {
         PaperProps={{
           component: 'form',
           onSubmit: async(event: React.FormEvent<HTMLFormElement>) => {
+            handleClose();
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries((formData as any).entries());
-            console.log(formJson)
-            
             try {
               const response = await fetch("http://localhost:5000/record/add", {
                 method: "POST",
@@ -217,14 +215,15 @@ const Navbar = (props: any) => {
               if (!response.ok) {
                 throw new Error("Network response was not ok");
               }
-      
-              handleClose();
-              props.add_array(formJson);
+              
             } catch (error) {
+              console.log(error)
               window.alert(error);
             }
           },
+          
         }}
+        
       >
         <DialogTitle>REJECTION INFO</DialogTitle>
         <DialogContent>
