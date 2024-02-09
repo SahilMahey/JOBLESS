@@ -199,13 +199,30 @@ const Navbar = (props: any) => {
         onClose={handleClose}
         PaperProps={{
           component: 'form',
-          onSubmit: (event: React.FormEvent<HTMLFormElement>) => {
+          onSubmit: async(event: React.FormEvent<HTMLFormElement>) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries((formData as any).entries());
             console.log(formJson)
-            handleClose();
-            props.add_array(formJson)
+            
+            try {
+              const response = await fetch("http://localhost:5000/record/add", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formJson),
+              });
+              
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+      
+              handleClose();
+              props.add_array(formJson);
+            } catch (error) {
+              window.alert(error);
+            }
           },
         }}
       >
