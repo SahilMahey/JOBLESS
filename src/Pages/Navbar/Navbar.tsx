@@ -203,24 +203,7 @@ const Navbar = (props: any) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries((formData as any).entries());
-            try {
-              const response = await fetch("http://localhost:5000/record/add", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify(formJson),
-              });
-              
-              if (!response.ok) {
-                throw new Error("Network response was not ok");
-              }
-              
-            } catch (error) {
-              console.log(error)
-              window.alert(error);
-            }
-          },
+            console.log(formJson)          },
           
         }}
         

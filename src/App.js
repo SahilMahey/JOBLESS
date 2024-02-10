@@ -6,22 +6,7 @@ import About from './Pages/About/About'
 import Error from './Pages/Error/Error.js'
 function App() {
   const [array, setArray] = useState([]);
-  useEffect(() => {
-    async function getRecords() {
-      const response = await fetch(`http://localhost:5000/record/`);
-      console.log(response)
-       if (!response.ok) {
-        const message = `An error occurred: ${response.statusText}`;
-        window.alert(message);
-        return;
-      }
-       const records = await response.json();
-       console.log(records)
-      setArray(records);
-    }
-     getRecords();
-     return;
-  }, [array.length]);
+  
   return (
     <>
     <BrowserRouter>
