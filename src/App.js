@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { useState,useEffect } from 'react';
+import { useState} from 'react';
 import Navbar from './Pages/Navbar/Navbar.tsx'
 import Home from './Pages/Home/Home'
 import About from './Pages/About/About'

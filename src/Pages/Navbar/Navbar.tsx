@@ -203,11 +203,8 @@ const Navbar = (props: any) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries((formData as any).entries());
-            console.log(formJson)          },
-          
-        }}
-        
-      >
+          },
+  }}>
         <DialogTitle>REJECTION INFO</DialogTitle>
         <DialogContent>
           <TextField
