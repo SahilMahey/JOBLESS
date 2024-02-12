@@ -7,7 +7,7 @@ const Home = (props) => {
     <div className="card-list">
     {
       props.array.map((element) => {
-       return <Card key = {element.RejectionTime} element = {element}/>
+       return <Card key = {element._id} element = {element}/>
       })
       
     }

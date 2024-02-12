@@ -203,6 +203,7 @@ const Navbar = (props: any) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries((formData as any).entries());
+            props.add_array(formJson);
           },
   }}>
         <DialogTitle>REJECTION INFO</DialogTitle>
@@ -212,7 +213,7 @@ const Navbar = (props: any) => {
             required
             margin="dense"
             id="name"
-            name="name"
+            name="Name"
             label="Job Name"
             fullWidth
             variant="standard"

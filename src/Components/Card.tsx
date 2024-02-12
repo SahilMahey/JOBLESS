@@ -21,18 +21,18 @@ export default function OverflowCard(props) {
         </AspectRatio>
       </CardOverflow>
       <CardContent>
-        <Typography level="title-md">{props.element.jobPosition}</Typography>
-        <Typography level="body-sm">{props.element.jobCompany}</Typography>
+        <Typography level="title-md">{props.element.name}</Typography>
+        <Typography level="body-sm">{props.element.company}</Typography>
       </CardContent>
       <CardOverflow variant="soft" sx={{ bgcolor: 'background.level1' }}>
         <Divider inset="context" />
         <CardContent orientation="horizontal">
           <Typography level="body-xs" fontWeight="md" textColor="text.secondary">
-            {props.element.RejectionDate}
+            {props.element.date}
           </Typography>
           <Divider orientation="vertical" />
           <Typography level="body-xs" fontWeight="md" textColor="text.secondary">
-          {props.element.RejectionTime}
+          {props.element.Time}
           </Typography>
         </CardContent>
       </CardOverflow>
