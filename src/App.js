@@ -14,24 +14,41 @@ function App() {
 
 const fetchData = async () => {
     try {
-        const response = await axios.get('http://localhost:5000/api/data');
+        const response = await axios.get('/.netlify/functions/data');
         setArray(response.data);
         
     } catch (error) {
         console.error('Error fetching data:', error);
     }
 };
-  const add_array  = (item) => {
+  const add_array  = async (item) => {
    
-    item = 
-    {
-      name: item.Name,
-      company: item.Company,
-      Time: item.Time,
-      date: item.Date,
+    
+      const name =  item.Name
+      const company = item.Company
+      const date = item.Date
+
+    
+
+    try {
+      const response = await fetch('/.netlify/functions/createPost', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name,company,date }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to create post');
+      }
+  
+      const data = await response.json();
+      console.log(data); // Do something with the response, like showing a success message or redirecting the user
+    } catch (error) {
+      console.error(error); // Handle error, show error message to the user, etc.
     }
-    let newArr=[...array,item];
-    setArray(newArr);
+    fetchData()
   }
   
   return (

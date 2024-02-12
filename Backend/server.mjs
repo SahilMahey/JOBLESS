@@ -55,7 +55,7 @@ async function createServer(){
       console.err(err)
     }
 
-    app.get('/api/data',async(req, res)=>
+    app.get('/data',async(req, res)=>
       {
         let collection = await db.collection('Rejection');
         let obj = await collection.find({}).toArray();
