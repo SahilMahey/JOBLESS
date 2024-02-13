@@ -51,13 +51,14 @@ const fetchData = async () => {
     fetchData()
   }
   
+ 
   return (
     <>
     <BrowserRouter>
     <Navbar add_array = {add_array}/>
     <Routes>
-    <Route  path ="/" element={ <Home array = {array}/>}/>
-      <Route path="Home" element={<Home array = {array}/>} />
+    <Route  path ="/" element={ <Home array = {array} fetchData={fetchData}/>}/>
+      <Route path="Home" element={<Home array = {array} fetchData={fetchData}/>} />
       <Route path="About" element={<About />} />
       <Route path = "*" element ={<Error />} />
     </Routes>

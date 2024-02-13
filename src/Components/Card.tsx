@@ -3,12 +3,40 @@ import AspectRatio from '@mui/joy/AspectRatio';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import CardOverflow from '@mui/joy/CardOverflow';
-import Divider from '@mui/joy/Divider';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/joy/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
 
-export default function OverflowCard(props) {
+export default function OverflowCard(props: any) {
+
+  const remove_card = async(id: any)=>
+  {
+    console.log(id)
+
+    try {
+      const response = await fetch('../../.netlify/functions/delete', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({id}),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete post');
+      }
+
+      // If you want to remove the post from the UI upon successful deletion,
+      // you can do so here by removing the corresponding DOM element
+
+      console.log('Post deleted successfully');
+      props.fetchData();
+    } catch (error) {
+      console.error(error); // Handle error, show error message to the user, etc.
+    }
+
+  };
+  
   return (
   <Card variant="outlined" sx={{ width: 320, mb: 2 }}>
   <CardOverflow>
@@ -29,7 +57,7 @@ export default function OverflowCard(props) {
     <Typography level="body-xs" fontWeight="md" textColor="text.secondary" sx = {{mt:1}}>
         {props.element.date}
     </Typography>
-    <IconButton aria-label="delete" size="small" >
+    <IconButton aria-label="delete" size="small" onClick={()=>remove_card(props.element._id)}>
   <DeleteIcon fontSize="small" />
 </IconButton>
   </CardOverflow>
