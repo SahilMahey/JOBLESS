@@ -6,12 +6,13 @@ import CardOverflow from '@mui/joy/CardOverflow';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/joy/Typography';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 export default function OverflowCard(props: any) {
-
+  
   const remove_card = async(id: any)=>
   {
-    console.log(id)
+    
 
     try {
       const response = await fetch('../../.netlify/functions/delete', {
@@ -36,6 +37,42 @@ export default function OverflowCard(props: any) {
     }
 
   };
+
+  const update_card = async(id: any) =>
+  {
+    props.setModal(true);
+    props.setUpdate(true);
+
+    try {
+      const response = await fetch('../../.netlify/functions/get_by_id', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({id}),
+      });
+      const data = await response.json();
+      
+      props.setModaldata({
+        
+        'name':data.details.name,
+        'company': data.details.company,
+        'date': data.details.date
+      })
+      props.setId( data.details._id)
+      console.log(data.details)
+      if (!response.ok) {
+        throw new Error('Failed to delete post');
+      }
+
+      // If you want to remove the post from the UI upon successful deletion,
+      // you can do so here by removing the corresponding DOM element
+
+      console.log('Post fetched successfully');
+    } catch (error) {
+      console.error(error); // Handle error, show error message to the user, etc.
+    }
+  }
   
   return (
   <Card variant="outlined" sx={{ width: 320, mb: 2 }}>
@@ -49,16 +86,19 @@ export default function OverflowCard(props: any) {
       />
     </AspectRatio>
   </CardOverflow>
-  <CardContent style={{ textAlign: 'center' }}>
+  <CardContent sx={{ display: 'flex', flexDirection:'column', justifyContent: 'center', alignItems:'center' }}>
     <Typography level="title-md">{props.element.name}</Typography>
     <Typography level="body-sm">{props.element.company}</Typography>
   </CardContent>
-  <CardOverflow variant="soft" sx={{ bgcolor: 'background.level1' , display: 'flex', flexDirection:'row',justifyContent: 'space-between' }}>
-    <Typography level="body-xs" fontWeight="md" textColor="text.secondary" sx = {{mt:1}}>
+  <CardOverflow  sx={{ bgcolor: 'background.level1' , display: 'flex', flexDirection:'row', justifyContent:'space-around'}}>
+    <Typography level="body-xs" fontWeight="md" textColor="text.secondary" sx={{mt:1}}>
         {props.element.date}
     </Typography>
-    <IconButton aria-label="delete" size="small" onClick={()=>remove_card(props.element._id)}>
-  <DeleteIcon fontSize="small" />
+    <IconButton aria-label="edit" size="small" onClick={()=>update_card(props.element._id) }>
+    <EditIcon fontSize="small" />
+   </IconButton>
+<IconButton aria-label="delete" size="small" onClick={()=>remove_card(props.element._id) }>
+<DeleteIcon fontSize="small" />
 </IconButton>
   </CardOverflow>
 </Card>

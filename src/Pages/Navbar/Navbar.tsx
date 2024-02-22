@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { useState } from 'react';
 import dayjs from 'dayjs';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -11,7 +10,6 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
-import { TimeField } from '@mui/x-date-pickers/TimeField';
 import MenuItem from '@mui/material/MenuItem';
 import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import AddIcon from '@mui/icons-material/Add';
@@ -33,12 +31,11 @@ const pages = ['Home', 'About'];
 const start = dayjs('2020-01-01T00:00:00.000');
 const tomorrow = dayjs().add(1, 'day');
 const Navbar = (props: any) => {
+  
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [modal, setModal] = useState(false);
+    
     const [error, setError] = React.useState<DateTimeValidationError | null>(null);
-    const [errorTime, setErrorTime] = React.useState<DateTimeValidationError | null>(null);
-   
     
     const errorMessage = React.useMemo(() => {
       
@@ -59,6 +56,24 @@ const Navbar = (props: any) => {
       }
     }, [error]);
 
+    const handle_name = (event :any)=>
+    {
+      props.setModaldata(
+        {name:event.target.value})
+    }
+    const handle_company = (event: any)=>
+    {
+      
+      props.setModaldata(
+        {company:event.target.value})
+    }
+
+    const handle_date = (newDate)=>
+    {
+      
+      props.setModaldata(
+        {date:newDate})
+    }
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
       setAnchorElNav(event.currentTarget);
     }
@@ -68,12 +83,21 @@ const Navbar = (props: any) => {
     };
   
     const handleClickOpen = () => {
-      setModal(true);
+      props.setModal(true);
     };
     
     const handleClose = () => {
-      setModal(false);
+      props.setModaldata(
+        {
+          'name': '',
+          'company':'',
+          'date': new Date()
+        })
+      props.setModal(false);
+      props.setUpdate(false)
     };
+
+   
   
   return (
 
@@ -192,18 +216,29 @@ const Navbar = (props: any) => {
       <Button variant="outlined" sx={{ my: 5, fontSize: 20}} onClick={handleClickOpen}>
       <AddIcon />
       </Button>
-      {modal &&  <React.Fragment>
+      {props.modal &&  <React.Fragment>
       <Dialog
-        open={modal}
+        open={props.modal}
         onClose={handleClose}
         PaperProps={{
           component: 'form',
           onSubmit: async(event: React.FormEvent<HTMLFormElement>) => {
-            handleClose();
+            
+            
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries((formData as any).entries());
-            props.add_array(formJson);
+            if (props.update)
+            {
+              props.change_data(formJson);
+            }
+            else
+            {
+              props.add_array(formJson);
+            }
+            handleClose()
+            
+           
           },
   }}>
         <DialogTitle>REJECTION INFO</DialogTitle>
@@ -217,6 +252,8 @@ const Navbar = (props: any) => {
             label="Job Name"
             fullWidth
             variant="standard"
+            value = {props.modaldata.name|| '' }
+            onChange={handle_name}
           />
           <TextField
             autoFocus
@@ -227,10 +264,12 @@ const Navbar = (props: any) => {
             label="Company Name"
             fullWidth
             variant="standard"
+            value = {props.modaldata.company || ''}
+            onChange={handle_company}
           />
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DemoContainer components={['DateTimePicker','TimePicker']}>
-          <DateField required name="Date" label="Date"  onError={(newError) => setError(newError)}
+          <DateField required name="Date" label="Date" value = {dayjs(props.modaldata.date)} onChange = {handle_date} onError={(newError) => setError(newError)}
           slotProps={{
             textField: {
               helperText: errorMessage,
@@ -241,16 +280,11 @@ const Navbar = (props: any) => {
           /> 
           </DemoContainer>
     </LocalizationProvider>
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DemoContainer components={['TimeField']}>
-        <TimeField label="Basic time field" name = "Time" required onError={(newError) => setErrorTime(newError)}
-         />
-      </DemoContainer>
-    </LocalizationProvider>
+   
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button type="submit" disabled={(error || errorTime) ? true : false} >Submit</Button>
+          {<Button type="submit" disabled={(error ) ? true : false} >Submit</Button>}
         </DialogActions>
       </Dialog>
     </React.Fragment>}
